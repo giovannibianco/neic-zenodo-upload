@@ -172,8 +172,6 @@ pub_dict = {
 'workingpaper': 'working paper',
 'other': 'other'}
 
-list_of_fig_types=["figure", "plot", "drawing", "diagram", "photo", "other"]
-
 if up_type.lower() == "publication":
     pub_type_ok=""
     pub_type=str(raw_input("Enter publication type. Case in-sensitive. Must be one of the following:\nAnnotation collection\nBook\nBook section\nConference paper\nData management plan\nJournal article\nPatent\nPreprint\nProject deliverable\nProject milestone\nProposal\nReport\nSoftware documentation\nTaxonomic treatment\nTechnical note\nThesis\nWorking paper\nOther\n : ")) # print pub_type; chop trailing whitespaces??
@@ -191,18 +189,36 @@ if up_type.lower() == "publication":
     value_for_json=pub_dict.keys()[pub_dict.values().index(lower_pub_type)]
     print value_for_json;
     metadata['publication_type']=value_for_json;
-   
-if up_type.lower() == "image":
-    metadata['image_type']=""
-    im_type=str(raw_input("Enter image type. Case in-sensitive. Must be one of the following:\nfigure\nplot\ndrawing\ndiagram\nphoto\nother\n : "))
-    for figt in list_of_fig_types:
-        if figt.lower() == im_type.lower():
-            metadata['image_type']=im_type.lower()
 
-    if metadata['image_type'] == "":
+    
+list_of_fig_types=["figure", "plot", "drawing", "diagram", "photo", "other"]
+
+img_dict = {
+   'figure': 'figure',
+   'plot': 'plot',
+   'drawing': 'drawing',
+   'diagram': 'diagram',
+   'photo': 'photo',
+   'other': 'other',
+} # note... the dictionary is all lower case.
+
+if up_type.lower() == "image": # actions to take if the upload type is a image...
+    img_type_ok="" # set to null
+    img_type=str(raw_input("Enter image type. Case in-sensitive. Must be one of the following:\nfigure\nplot\ndrawing\ndiagram\nphoto\nother\n : "))
+    for figt in list_of_fig_types:
+        if figt.lower() == img_type.lower(): # check if the input image type is valid
+            img_type_ok="OK"
+    if img_type_ok == "": # if not... give error message and exit.
         print 'Error: Image type was set to ',im_type,' exiting.'
         sys.exit(2)
-        
+
+    metadata['image_type']="" # set to null
+    lower_img_type=img_type.lower() # convert image type to lower
+    value_for_json="" # set to null
+    value_for_json=img_dict.keys()[img_dict.values().index(lower_img_type)] # set to the dictionary pair...
+    print value_for_json; # debugging
+    metadata['image_type']=value_for_json; # set the value
+         
 # jsondata is the metadata to be uploaded to the deposition_id
 jsondata['metadata']=metadata;
 json_formatted_str = json.dumps(jsondata, indent=2)
@@ -212,7 +228,7 @@ print(json_formatted_str)
 r = requests.put('https://sandbox.zenodo.org/api/deposit/depositions/%s' % deposition_id,params={'access_token': ACCESS_TOKEN}, data=json.dumps(jsondata),headers=headers)
 print "HTTP return code from metadata step: ",r.status_code
 
-# sys.exit(1)
+sys.exit(1)
 #
 # Here is the publishing step...
 # Note... all you need here is the deposition_id obtained above! Could be a good place for sanity check?
