@@ -227,8 +227,8 @@ print(json_formatted_str)
 # Add the metadata... to the deposition ID
 r = requests.put('https://sandbox.zenodo.org/api/deposit/depositions/%s' % deposition_id,params={'access_token': ACCESS_TOKEN}, data=json.dumps(jsondata),headers=headers)
 print "HTTP return code from metadata step: ",r.status_code
-
-sys.exit(1)
+#
+# sys.exit(1) # Here you can stop the script before publishing. Uncomment
 #
 # Here is the publishing step...
 # Note... all you need here is the deposition_id obtained above! Could be a good place for sanity check?
