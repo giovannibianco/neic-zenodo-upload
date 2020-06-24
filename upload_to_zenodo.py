@@ -40,7 +40,8 @@ if __name__ == "__main__":
    main(sys.argv[1:])
 
 system('clear');
-   
+
+REPOSITORY_PATH='https://sandbox.zenodo.org'; # this must be dealt with... input 
 filename = inputfile; # this is for the put request below...
 path = "/home/jwhite/%s" % filename  ## this is for opening the file below
 path = pathtofile + inputfile; # print path # We must test that the full pathname is VALID!
@@ -60,7 +61,6 @@ if not my_file.is_file():
     sys.exit(2)
 
 filename = inputfile; # this is for the put request below...
-path = "/home/jwhite/%s" % filename  ## this is for opening the file below
 path = pathtofile + inputfile; # print path # We must test that the full pathname is VALID!
 from pathlib import Path
 
@@ -76,7 +76,8 @@ params = {'access_token': ACCESS_TOKEN}
 
 # sys.exit(1);
 
-r = requests.post('https://sandbox.zenodo.org/api/deposit/depositions',params=params,json={},headers=headers)
+# r = requests.post('https://sandbox.zenodo.org/api/deposit/depositions',params=params,json={},headers=headers)
+r = requests.post(REPOSITORY_PATH + '/api/deposit/depositions',params=params,json={},headers=headers)
 print 'HTTP return code: ',r.status_code
 json_formatted_str = json.dumps(r.json(), indent=2)
 print json_formatted_str
@@ -111,8 +112,8 @@ with open(FILE) as f:
         # else:
         #     print 'ORCID is ...',orcid;
         affil=affil1.rstrip();
-        family_name,first_name=name.split(' ')
-        final_name=family_name+', '+first_name;
+        family_name,first_name=name.split(' ') # here we have a problem if double last or first name!
+        final_name=family_name+', '+first_name; # What to do??? otherwise
         tmp_creator['name']=final_name
         if orcid:
             tmp_creator['orcid']=orcid
@@ -136,7 +137,7 @@ metadata['title']=title # "Euro to CHF exchange rates"
 # upload type: Publication, Poster, Presentation, Dataset, Image, Audio/Video, Software, Lesson, Other
 # Maybe this could be interrogated from the web interface? later...
 up_type=str(raw_input("Enter upload type. Case in-sensitive. Must be one of the following:\nPublication\nPoster\nPresentation\nDataset\nImage\nAudio/Video\nSoftware\nLesson\nOther\n : "))
-metadata['upload_type']=up_type # Check this!
+metadata['upload_type']=up_type.lower() # Check this! Important it seems to be lower case!
 #    
 # if the upload_type is  Publication, then one of the following must be selected:
 #
@@ -148,27 +149,55 @@ metadata['upload_type']=up_type # Check this!
 #
 
 # Maybe this could be interrogated from the web interface? later...
+
 list_of_pub_types=["Annotation collection", "Book", "Book section", "Conference paper", "Data management plan", "Journal article", "Patent", "Preprint", "Project deliverable", "Project milestone", "Proposal", "Report", "Software documentation", "Taxonomic treatment", "Technical note", "Thesis", "Working paper", "Other"]
+
+pub_dict = {
+'annotationcollection': 'annotation collection',
+'book': 'book',
+'section': 'book section',
+'conferencepaper': 'conference paper',
+'datamanagementplan': 'data management plan',
+'article': 'journal article',
+'patent': 'patent',
+'preprint': 'preprint',
+'deliverable': 'project deliverable',
+'milestone': 'project milestone',
+'proposal': 'proposal',
+'report': 'report',
+'softwaredocumentation': 'software documentation',
+'taxonomictreatment': 'taxonomic treatment',
+'technicalnote': 'technical note',
+'thesis': 'thesis',
+'workingpaper': 'working paper',
+'other': 'other'}
 
 list_of_fig_types=["figure", "plot", "drawing", "diagram", "photo", "other"]
 
 if up_type.lower() == "publication":
-    metadata['publication_type']=""
+    pub_type_ok=""
     pub_type=str(raw_input("Enter publication type. Case in-sensitive. Must be one of the following:\nAnnotation collection\nBook\nBook section\nConference paper\nData management plan\nJournal article\nPatent\nPreprint\nProject deliverable\nProject milestone\nProposal\nReport\nSoftware documentation\nTaxonomic treatment\nTechnical note\nThesis\nWorking paper\nOther\n : ")) # print pub_type; chop trailing whitespaces??
-    for pubt in list_of_pub_types:
+    for pubt in list_of_pub_types: # check the publication type is OK.
         if pubt.lower() == pub_type.lower():
-            metadata['publication_type']=pub_type
+           pub_type_ok="OK"
             
-    if metadata['publication_type'] == "":
+    if pub_type_ok == "":
         print 'Error: Publication type was set to ',pub_type,' exiting.'
         sys.exit(2)
 
+    metadata['publication_type']=""
+    lower_pub_type=pub_type.lower()
+    value_for_json=""
+    value_for_json=pub_dict.keys()[pub_dict.values().index(lower_pub_type)]
+    print value_for_json;
+    metadata['publication_type']=value_for_json;
+   
 if up_type.lower() == "image":
     metadata['image_type']=""
     im_type=str(raw_input("Enter image type. Case in-sensitive. Must be one of the following:\nfigure\nplot\ndrawing\ndiagram\nphoto\nother\n : "))
     for figt in list_of_fig_types:
         if figt.lower() == im_type.lower():
-            metadata['image_type']=im_type
+            metadata['image_type']=im_type.lower()
 
     if metadata['image_type'] == "":
         print 'Error: Image type was set to ',im_type,' exiting.'
@@ -183,7 +212,7 @@ print(json_formatted_str)
 r = requests.put('https://sandbox.zenodo.org/api/deposit/depositions/%s' % deposition_id,params={'access_token': ACCESS_TOKEN}, data=json.dumps(jsondata),headers=headers)
 print "HTTP return code from metadata step: ",r.status_code
 
-sys.exit(1)
+# sys.exit(1)
 #
 # Here is the publishing step...
 # Note... all you need here is the deposition_id obtained above! Could be a good place for sanity check?
