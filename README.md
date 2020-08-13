@@ -18,7 +18,7 @@ You must set DIRECTORY to the full path where the files neic.no/_people/*.md are
 
 You must set OUTPUT_FILE to the desired name of the authors metadata text file
 
-./upload_to_zenodo.py -p <path to document file> \
+./upload_to_zenodo.py -p \<path to document file\> \
                       -i <document file> \
 		      -d <file containing the description of the document> \
 		      -m <file containing the author list> \
