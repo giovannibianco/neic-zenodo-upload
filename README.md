@@ -34,7 +34,7 @@ e.g.
 
 where:
 
-jwhite@iso-paha:~/Zenodo$ ls -l ~/Downloads/Dellingr_Phase1_DO1_v2.pdf
+jwhite@iso-paha:~/Zenodo$ ls -l ~/Downloads/Dellingr_Phase1_DO1_v2.pdf <br>
 -rw-rw-r-- 1 jwhite jwhite 473048 Jul 28 15:29 /home/jwhite/Downloads/Dellingr_Phase1_DO1_v2.pdf
 
 jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1_description.txt
