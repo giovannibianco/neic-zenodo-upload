@@ -11,12 +11,13 @@ def main(argv):
    global metadatafile; metadatafile = ''
    global descriptionfile; descriptionfile = ''
    global ACCESS_TOKEN; ACCESS_TOKEN = ""
-   prog_string='test.py -i <file to be published> -o <metadata file> -d <description file> -A <access_token>'
+   prog_string='upload_to_zenodo.py -p <path to file> -i <file to be published> -m <metadata file> -d <description file> -A <access_token>'
    try:
       opts, args = getopt.getopt(argv,"hi:m:d:A:p:",["ifile=","ofile=","dfile=","token=","path="])
-   except getopt.GetoptError:
-      print prog_string
-      sys.exit(2)
+   except getopt.error as msg:
+        sys.stdout = sys.stderr
+        print(msg)
+        sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
          print prog_string
@@ -41,7 +42,10 @@ if __name__ == "__main__":
 
 system('clear');
 
-REPOSITORY_PATH='https://sandbox.zenodo.org'; # this must be dealt with... input 
+REPOSITORY_PATH='https://zenodo.org';
+# this must be dealt with... input 
+# REPOSITORY_PATH='https://sandbox.zenodo.org';
+
 filename = inputfile; # this is for the put request below...
 path = "/home/jwhite/%s" % filename  ## this is for opening the file below
 path = pathtofile + inputfile; # print path # We must test that the full pathname is VALID!
@@ -72,17 +76,21 @@ if not my_file.is_file():
 
     # Set up the headers
 headers = {"Content-Type": "application/json"}
-params = {'access_token': ACCESS_TOKEN}
+params = {'access_token': ACCESS_TOKEN} # params={'access_token': ACCESS_TOKEN}
 
 # sys.exit(1);
 
 # r = requests.post('https://sandbox.zenodo.org/api/deposit/depositions',params=params,json={},headers=headers)
-r = requests.post(REPOSITORY_PATH + '/api/deposit/depositions',params=params,json={},headers=headers)
+# r = requests.post(REPOSITORY_PATH + '/api/deposit/depositions',params=params,json={},headers=headers)
+r = requests.post(REPOSITORY_PATH + '/api/deposit/depositions',params={'access_token': ACCESS_TOKEN},json={},headers=headers)
+# r = requests.get(REPOSITORY_PATH + '/api/deposit/depositions',params={'access_token': ACCESS_TOKEN},json={},headers=headers)
+
 print 'HTTP return code: ',r.status_code
 json_formatted_str = json.dumps(r.json(), indent=2)
 print json_formatted_str
 
 bucket_url = r.json()["links"]["bucket"]
+print 'The bucket URL is: ',bucket_url
 deposition_id=r.json()["record_id"]
 
 
@@ -225,7 +233,8 @@ json_formatted_str = json.dumps(jsondata, indent=2)
 print(json_formatted_str)
 
 # Add the metadata... to the deposition ID
-r = requests.put('https://sandbox.zenodo.org/api/deposit/depositions/%s' % deposition_id,params={'access_token': ACCESS_TOKEN}, data=json.dumps(jsondata),headers=headers)
+r = requests.put(REPOSITORY_PATH + '/api/deposit/depositions/%s' % deposition_id,params={'access_token': ACCESS_TOKEN}, data=json.dumps(jsondata),headers=headers)
+# r = requests.put('https://sandbox.zenodo.org/api/deposit/depositions/%s' % deposition_id,params={'access_token': ACCESS_TOKEN}, data=json.dumps(jsondata),headers=headers)
 print "HTTP return code from metadata step: ",r.status_code
 #
 # sys.exit(1) # Here you can stop the script before publishing. Uncomment
@@ -233,7 +242,8 @@ print "HTTP return code from metadata step: ",r.status_code
 # Here is the publishing step...
 # Note... all you need here is the deposition_id obtained above! Could be a good place for sanity check?
 #
-r = requests.post('https://sandbox.zenodo.org/api/deposit/depositions/%s/actions/publish' % deposition_id, params={'access_token': ACCESS_TOKEN})
+# r = requests.post('https://sandbox.zenodo.org/api/deposit/depositions/%s/actions/publish' % deposition_id, params={'access_token': ACCESS_TOKEN})
+r = requests.post(REPOSITORY_PATH + '/api/deposit/depositions/%s/actions/publish' % deposition_id, params={'access_token': ACCESS_TOKEN})
 print "HTTP return code from publishing step: ",r.status_code
 json_formatted_str = json.dumps(r.json(), indent=2)
 print json_formatted_str
