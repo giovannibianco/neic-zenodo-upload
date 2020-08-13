@@ -37,14 +37,14 @@ where:
 jwhite@iso-paha:~/Zenodo$ ls -l ~/Downloads/Dellingr_Phase1_DO1_v2.pdf <br>
 -rw-rw-r-- 1 jwhite jwhite 473048 Jul 28 15:29 /home/jwhite/Downloads/Dellingr_Phase1_DO1_v2.pdf
 
-jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1_description.txt
+jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1_description.txt <br>
 Dellingr Phase 1 deliverable DO1 giving the overall requirements for resource sharing and current usage modes for non-national users.
 
-jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1.txt
-Fagerholm Juha,0000-0002-9972-4468,CSC
-Nikunen Petri,0000-0003-0759-6372,CSC
-Malkiewicz Tomasz,,CSC
-Sveinbjörnsson Hjörleifur,0000-0002-4120-1234,RHnet
-Svalgaard-Kohrt Jens,0000-0002-3104-0406,DeIC
-Viðarsson Máni-Maríus,,RHnet
+jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1.txt <br>
+Fagerholm Juha,0000-0002-9972-4468,CSC <br>
+Nikunen Petri,0000-0003-0759-6372,CSC<br>
+Malkiewicz Tomasz,,CSC<br>
+Sveinbjörnsson Hjörleifur,0000-0002-4120-1234,RHnet<br>
+Svalgaard-Kohrt Jens,0000-0002-3104-0406,DeIC<br>
+Viðarsson Máni-Maríus,,RHnet<br>
 
