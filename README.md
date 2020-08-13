@@ -18,5 +18,33 @@ You must set DIRECTORY to the full path where the files neic.no/_people/*.md are
 
 You must set OUTPUT_FILE to the desired name of the authors metadata text file
 
-upload_to_zenodo.py
+./upload_to_zenodo.py -p <path to document file> \
+                      -i <document file> \
+		      -d <file containing the description of the document> \
+		      -m <file containing the author list> \
+		      -A <your secret key string generated on Zenodo site>
+
+e.g.
+
+./upload_to_zenodo.py -p /home/jwhite/Downloads/ \
+                      -i Dellingr_Phase1_DO1_v2.pdf \
+		      -d dellingr_p1_d1_description.txt \
+		      -m dellingr_p1_d1.txt \
+		      -A "SECRETKEYSTRINGetcetc"
+
+where:
+
+jwhite@iso-paha:~/Zenodo$ ls -l ~/Downloads/Dellingr_Phase1_DO1_v2.pdf
+-rw-rw-r-- 1 jwhite jwhite 473048 Jul 28 15:29 /home/jwhite/Downloads/Dellingr_Phase1_DO1_v2.pdf
+
+jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1_description.txt
+Dellingr Phase 1 deliverable DO1 giving the overall requirements for resource sharing and current usage modes for non-national users.
+
+jwhite@iso-paha:~/Zenodo$ cat dellingr_p1_d1.txt
+Fagerholm Juha,0000-0002-9972-4468,CSC
+Nikunen Petri,0000-0003-0759-6372,CSC
+Malkiewicz Tomasz,,CSC
+Sveinbjörnsson Hjörleifur,0000-0002-4120-1234,RHnet
+Svalgaard-Kohrt Jens,0000-0002-3104-0406,DeIC
+Viðarsson Máni-Maríus,,RHnet
 
